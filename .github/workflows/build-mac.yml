@@ -30,4 +30,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: mac-executable
-        path: dist/your_script # File đầu ra sẽ nằm ở đây
+        path: dist/hud_quiz_app # File đầu ra sẽ nằm ở đây
