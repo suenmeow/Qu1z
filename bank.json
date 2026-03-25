@@ -1,0 +1,408 @@
+{
+    "ALL": [
+        {
+            "q": "Trường Sa, Hoàng Sa là của nước nào?",
+            "opts": [
+                "Trung Quốc",
+                "Việt Nam",
+                "Philippines",
+                "Malaysia"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Việt Nam nằm ở châu lục nào?",
+            "opts": [
+                "Châu Âu",
+                "Châu Phi",
+                "Châu Mỹ",
+                "Châu Á"
+            ],
+            "ans": 3,
+            "user_ans": -1
+        },
+        {
+            "q": "Phép tính 10 x 10 bằng bao nhiêu?",
+            "opts": [
+                "20",
+                "100",
+                "1000",
+                "0"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Nước Mỹ có bao nhiêu tiểu bang?",
+            "opts": [
+                "48",
+                "49",
+                "50",
+                "51"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Quốc kỳ Việt Nam có biểu tượng gì?",
+            "opts": [
+                "Ngôi sao vàng 5 cánh",
+                "Búa liềm",
+                "Hoa sen",
+                "Hình chữ S"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Thuyết tương đối rộng của Albert Einstein mô tả lực hấp dẫn như thế nào?",
+            "opts": [
+                "Lực hút bí ẩn giữa các khối lượng",
+                "Sự cong của mặt nón không-thời gian do khối lượng/năng lượng",
+                "Lực đẩy của vật chất tối",
+                "Hạt Graviton liên kết các vì sao"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Hạt Higgs (Boson Higgs) có vai trò chính gì trong Mô hình Chuẩn?",
+            "opts": [
+                "Giải thích nguồn gốc khối lượng của các hạt cơ bản",
+                "Liên kết hạt nhân nguyên tử bền vững",
+                "Tạo ra các định luật nhiệt động lực học",
+                "Giải thích cơ chế hình thành lỗ đen"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Trong cơ học lượng tử, nguyên lý bất định Heisenberg phát biểu điều gì?",
+            "opts": [
+                "Năng lượng luôn được bảo toàn tuyệt đối",
+                "Tốc độ ánh sáng là giới hạn và bất biến",
+                "Không thể biết chính xác đồng thời cả vị trí và động lượng của một hạt",
+                "Một hạt có thể ở hai trạng thái sống và chết cùng lúc"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Nghịch lý Fermi (Fermi Paradox) đề cập đến vấn đề gì?",
+            "opts": [
+                "Nguồn gốc cốt lõi của vật chất tối",
+                "Vũ trụ giãn nở nhưng không suy sụp",
+                "Sự mâu thuẫn giữa xác suất cao có văn minh ngoài hành tinh và việc thiếu bằng chứng",
+                "Lỗ đen bốc hơi nhưng thông tin không bị mất"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Bức xạ nền vi sóng vũ trụ (CMB) là gì?",
+            "opts": [
+                "Bức xạ phát ra từ lõi của Mặt Trời",
+                "Bức xạ nhiệt độ thấp tàn dư từ thời kỳ sơ khai của vũ trụ (Vụ nổ lớn)",
+                "Bức xạ rò rỉ từ các lỗ đen lớn",
+                "Luồng năng lượng từ các vụ nổ Gamma xung quanh Trái Đất"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Lỗ đen siêu khối lượng Sagittarius A* nằm ở đâu?",
+            "opts": [
+                "Ở ngoại vi Hệ Mặt Trời",
+                "Tại trung tâm dải Ngân Hà (Milky Way)",
+                "Bên trong thiên hà Andromeda",
+                "Tại rìa của vũ trụ quan sát được"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Đâu là giải thích ngắn gọn nhất cho hiện tượng Rối lượng tử (Quantum Entanglement)?",
+            "opts": [
+                "Hai hạt chia sẻ chung một trạng thái và tương tác tức thì dù cách xa nhau",
+                "Photon đi xuyên qua các đám mây khí lạnh",
+                "Sự co giãn của thời gian khi ở gần trạng thái vận tốc ánh sáng",
+                "Hạt Electron tách đôi và thay đổi khối lượng do trường kích thích"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Lý thuyết dây (String Theory) nhằm mục đích giải quyết vấn đề cơ bản nào của vật lý?",
+            "opts": [
+                "Dự đoán cái chết của vũ trụ",
+                "Kết nối và đánh giá sự sinh sản vô tính ở cấp vi mô",
+                "Thống nhất cơ học lượng tử và Thuyết tương đối rộng (Vật lý vĩ mô)",
+                "Giải thích sự hình thành từ tính của rẽ sao"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Năng lượng tối (Dark Energy) được giới khoa học cho là nguyên nhân chính gây ra hiện tượng gì?",
+            "opts": [
+                "Lỗ đen hút vạn vật xung quanh nó",
+                "Sự giãn nở của vũ trụ với tốc độ ngày càng nhanh (Gia tốc dãn nở)",
+                "Sức hút duy trì ổn định cấu trúc thiên hà",
+                "Gây ra sự uốn cong quỹ đạo tĩnh điện"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Hằng số Planck trong vật lý lượng tử có ý nghĩa biểu thị điều gì?",
+            "opts": [
+                "Vận tốc tuyệt đối của ánh sáng",
+                "Cấu trúc lượng tử xoắn của thời gian",
+                "Dung sai giới hạn của không gian 3 chiều",
+                "Lượng tử tác dụng, đặc trưng cho tính gián đoạn của mức năng lượng vi mô"
+            ],
+            "ans": 3,
+            "user_ans": -1
+        },
+        {
+            "q": "Bạn đánh giá tổng thể trải nghiệm sử dụng giao diện thi HUD như thế nào?",
+            "opts": [
+                "Rất hiện đại và dễ nhìn",
+                "Khá đẹp nhưng còn rối",
+                "Bình thường",
+                "Khó nhìn, thiết kế lỗi thời"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Chức năng tạo đề thi và tìm kiếm câu hỏi mới hoạt động ra sao?",
+            "opts": [
+                "Rất chậm chạp",
+                "Bình thường, nhưng tìm kiếm không chuẩn",
+                "Nhanh, mượt mà và tìm chính xác",
+                "Thường xuyên bị lỗi"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Bạn có khó khăn gì trong việc đọc và chọn đáp án không?",
+            "opts": [
+                "Có, chữ quá bé và màu nổi quá chói",
+                "Không, màu sắc đã được làm dịu lại rất dễ nhìn",
+                "Rất khó bấm trúng đáp án",
+                "Không phản hồi khi bấm"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        }
+    ],
+    "WARMUP": [
+        {
+            "q": "Nước Mỹ có bao nhiêu tiểu bang?",
+            "opts": [
+                "48",
+                "49",
+                "50",
+                "51"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Quốc kỳ Việt Nam có biểu tượng gì?",
+            "opts": [
+                "Ngôi sao vàng 5 cánh",
+                "Búa liềm",
+                "Hoa sen",
+                "Hình chữ S"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Phép tính 10 x 10 bằng bao nhiêu?",
+            "opts": [
+                "20",
+                "100",
+                "1000",
+                "0"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Trường Sa, Hoàng Sa là của nước nào?",
+            "opts": [
+                "Trung Quốc",
+                "Việt Nam",
+                "Philippines",
+                "Malaysia"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Việt Nam nằm ở châu lục nào?",
+            "opts": [
+                "Châu Âu",
+                "Châu Phi",
+                "Châu Mỹ",
+                "Châu Á"
+            ],
+            "ans": 3,
+            "user_ans": -1
+        }
+    ],
+    "LAW": [
+        {
+            "q": "Đâu là giải thích ngắn gọn nhất cho hiện tượng Rối lượng tử (Quantum Entanglement)?",
+            "opts": [
+                "Hai hạt chia sẻ chung một trạng thái và tương tác tức thì dù cách xa nhau",
+                "Photon đi xuyên qua các đám mây khí lạnh",
+                "Sự co giãn của thời gian khi ở gần trạng thái vận tốc ánh sáng",
+                "Hạt Electron tách đôi và thay đổi khối lượng do trường kích thích"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Thuyết tương đối rộng của Albert Einstein mô tả lực hấp dẫn như thế nào?",
+            "opts": [
+                "Lực hút bí ẩn giữa các khối lượng",
+                "Sự cong của mặt nón không-thời gian do khối lượng/năng lượng",
+                "Lực đẩy của vật chất tối",
+                "Hạt Graviton liên kết các vì sao"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Hạt Higgs (Boson Higgs) có vai trò chính gì trong Mô hình Chuẩn?",
+            "opts": [
+                "Giải thích nguồn gốc khối lượng của các hạt cơ bản",
+                "Liên kết hạt nhân nguyên tử bền vững",
+                "Tạo ra các định luật nhiệt động lực học",
+                "Giải thích cơ chế hình thành lỗ đen"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Nghịch lý Fermi (Fermi Paradox) đề cập đến vấn đề gì?",
+            "opts": [
+                "Nguồn gốc cốt lõi của vật chất tối",
+                "Vũ trụ giãn nở nhưng không suy sụp",
+                "Sự mâu thuẫn giữa xác suất cao có văn minh ngoài hành tinh và việc thiếu bằng chứng",
+                "Lỗ đen bốc hơi nhưng thông tin không bị mất"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Lý thuyết dây (String Theory) nhằm mục đích giải quyết vấn đề cơ bản nào của vật lý?",
+            "opts": [
+                "Dự đoán cái chết của vũ trụ",
+                "Kết nối và đánh giá sự sinh sản vô tính ở cấp vi mô",
+                "Thống nhất cơ học lượng tử và Thuyết tương đối rộng (Vật lý vĩ mô)",
+                "Giải thích sự hình thành từ tính của rẽ sao"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Năng lượng tối (Dark Energy) được giới khoa học cho là nguyên nhân chính gây ra hiện tượng gì?",
+            "opts": [
+                "Lỗ đen hút vạn vật xung quanh nó",
+                "Sự giãn nở của vũ trụ với tốc độ ngày càng nhanh (Gia tốc dãn nở)",
+                "Sức hút duy trì ổn định cấu trúc thiên hà",
+                "Gây ra sự uốn cong quỹ đạo tĩnh điện"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        }
+    ],
+    "THEORY": [
+        {
+            "q": "Hằng số Planck trong vật lý lượng tử có ý nghĩa biểu thị điều gì?",
+            "opts": [
+                "Vận tốc tuyệt đối của ánh sáng",
+                "Cấu trúc lượng tử xoắn của thời gian",
+                "Dung sai giới hạn của không gian 3 chiều",
+                "Lượng tử tác dụng, đặc trưng cho tính gián đoạn của mức năng lượng vi mô"
+            ],
+            "ans": 3,
+            "user_ans": -1
+        },
+        {
+            "q": "Năng lượng tối (Dark Energy) được giới khoa học cho là nguyên nhân chính gây ra hiện tượng gì?",
+            "opts": [
+                "Lỗ đen hút vạn vật xung quanh nó",
+                "Sự giãn nở của vũ trụ với tốc độ ngày càng nhanh (Gia tốc dãn nở)",
+                "Sức hút duy trì ổn định cấu trúc thiên hà",
+                "Gây ra sự uốn cong quỹ đạo tĩnh điện"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        },
+        {
+            "q": "Lý thuyết dây (String Theory) nhằm mục đích giải quyết vấn đề cơ bản nào của vật lý?",
+            "opts": [
+                "Dự đoán cái chết của vũ trụ",
+                "Kết nối và đánh giá sự sinh sản vô tính ở cấp vi mô",
+                "Thống nhất cơ học lượng tử và Thuyết tương đối rộng (Vật lý vĩ mô)",
+                "Giải thích sự hình thành từ tính của rẽ sao"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Đâu là giải thích ngắn gọn nhất cho hiện tượng Rối lượng tử (Quantum Entanglement)?",
+            "opts": [
+                "Hai hạt chia sẻ chung một trạng thái và tương tác tức thì dù cách xa nhau",
+                "Photon đi xuyên qua các đám mây khí lạnh",
+                "Sự co giãn của thời gian khi ở gần trạng thái vận tốc ánh sáng",
+                "Hạt Electron tách đôi và thay đổi khối lượng do trường kích thích"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        }
+    ],
+    "FEEDBACK": [
+        {
+            "q": "Bạn đánh giá tổng thể trải nghiệm sử dụng giao diện thi HUD như thế nào?",
+            "opts": [
+                "Rất hiện đại và dễ nhìn",
+                "Khá đẹp nhưng còn rối",
+                "Bình thường",
+                "Khó nhìn, thiết kế lỗi thời"
+            ],
+            "ans": 0,
+            "user_ans": -1
+        },
+        {
+            "q": "Chức năng tạo đề thi và tìm kiếm câu hỏi mới hoạt động ra sao?",
+            "opts": [
+                "Rất chậm chạp",
+                "Bình thường, nhưng tìm kiếm không chuẩn",
+                "Nhanh, mượt mà và tìm chính xác",
+                "Thường xuyên bị lỗi"
+            ],
+            "ans": 2,
+            "user_ans": -1
+        },
+        {
+            "q": "Bạn có khó khăn gì trong việc đọc và chọn đáp án không?",
+            "opts": [
+                "Có, chữ quá bé và màu nổi quá chói",
+                "Không, màu sắc đã được làm dịu lại rất dễ nhìn",
+                "Rất khó bấm trúng đáp án",
+                "Không phản hồi khi bấm"
+            ],
+            "ans": 1,
+            "user_ans": -1
+        }
+    ]
+}
