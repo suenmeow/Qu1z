@@ -437,6 +437,11 @@ class ScreenMenu(BaseScreen):
         layout.addWidget(btn_test, alignment=Qt.AlignmentFlag.AlignCenter)
         
     def start_test(self):
+        # Reset toàn bộ câu trả lời của người dùng trước khi làm bài mới
+        for cat in state.banks:
+            for q in state.banks[cat]:
+                q["user_ans"] = -1
+                
         # Chuyển sang màn hình giới thiệu (Intro)
         intro_screen = self.main_app.stack.widget(0)
         
@@ -469,6 +474,11 @@ class ScreenCreateQuestion(BaseScreen):
         self.inp_b = QLineEdit()
         self.inp_c = QLineEdit()
         self.inp_d = QLineEdit()
+        
+        # Make the inputs taller and font larger for better visibility (especially on macOS)
+        for inp in [self.inp_q, self.inp_a, self.inp_b, self.inp_c, self.inp_d]:
+            inp.setMinimumHeight(45)
+            inp.setStyleSheet("font-size: 16px; padding: 10px;")
         
         self.cb_ans = QComboBox()
         self.cb_ans.addItems(["A", "B", "C", "D"])
@@ -911,11 +921,53 @@ class TestScreen(BaseScreen):
         
         layout = QVBoxLayout(self)
         
-        # Header
-        self.lbl_title = QLabel(title)
-        self.lbl_title.setObjectName("Subtitle")
-        self.lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self.lbl_title)
+        # Header Frame
+        header_frame = QFrame()
+        header_frame.setObjectName("HeaderFrame")
+        header_frame.setStyleSheet("""
+            QFrame#HeaderFrame {
+                background: transparent;
+                border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            }
+        """)
+        header_layout = QVBoxLayout(header_frame)
+        header_layout.setContentsMargins(0, 16, 0, 16)
+        header_layout.setSpacing(12)
+        
+        # 1. Section Name (Pill Badge)
+        self.lbl_badge = QLabel()
+        self.lbl_badge.setObjectName("SectionBadge")
+        self.lbl_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_badge.setStyleSheet("""
+            QLabel#SectionBadge {
+                background-color: #EEF2FF;
+                color: #4338CA;
+                font-size: 22px;
+                font-weight: 800;
+                padding: 10px 24px;
+                border-radius: 20px;
+            }
+        """)
+        
+        badge_container = QHBoxLayout()
+        badge_container.addStretch()
+        badge_container.addWidget(self.lbl_badge)
+        badge_container.addStretch()
+        header_layout.addLayout(badge_container)
+        
+        # 3. Progress Indicator
+        self.progress_layout = QHBoxLayout()
+        self.progress_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.progress_layout.setSpacing(8)
+        header_layout.addLayout(self.progress_layout)
+        
+        # Question Progress Label
+        self.lbl_q_progress = QLabel()
+        self.lbl_q_progress.setStyleSheet("color: #A0AEC0; font-size: 15px; font-weight: bold;")
+        self.lbl_q_progress.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        header_layout.addWidget(self.lbl_q_progress)
+
+        layout.addWidget(header_frame)
         
         # HUD Question box
         self.lbl_q = QLabel("Question Text")
@@ -953,7 +1005,15 @@ class TestScreen(BaseScreen):
         footer = QHBoxLayout()
         
         # Logic nút Kết thúc / Bỏ qua (warmup) / Tiếp theo
-        end_text = "Xem kết quả thi" if self.category == "FEEDBACK" else "Kết thúc bài thi"
+        if self.category == "FEEDBACK":
+            end_text = "Xem kết quả thi"
+        elif self.category == "LAW":
+            end_text = "Kết thúc bài thi Luật và xem kết quả"
+        elif self.category == "THEORY":
+            end_text = "Kết thúc bài thi Lý thuyết và xem kết quả"
+        else:
+            end_text = "Kết thúc bài thi"
+            
         self.btn_end = QPushButton(end_text)
         self.btn_end.setStyleSheet("background-color: #d62828;")
         self.btn_end.clicked.connect(self.end_test)
@@ -963,7 +1023,7 @@ class TestScreen(BaseScreen):
         
         self.btn_skip = None
         if self.is_warmup:
-            self.btn_skip = QPushButton("Bỏ qua")
+            self.btn_skip = QPushButton("Bỏ qua bài thi thử")
             self.btn_skip.clicked.connect(self.skip_warmup)
             footer.addWidget(self.btn_skip)
             
@@ -1005,14 +1065,38 @@ class TestScreen(BaseScreen):
         self.curr_idx = idx
         q_data = state.banks[self.category][idx]
         
-        cat_names = {
-            "WARMUP": "CÁC CÂU HỎI KHÔNG TÍNH ĐIỂM ĐỂ LÀM QUEN PHẦN MỀM",
-            "LAW": "BÀI THI LUẬT",
-            "THEORY": "BÀI THI LÝ THUYẾT",
-            "FEEDBACK": "ĐÁNH GIÁ HỆ THỐNG"
+        cat_info = {
+            "WARMUP": ("🎯 CÁC CÂU HỎI KHÔNG TÍNH ĐIỂM ĐỂ LÀM QUEN PHẦN MỀM", 0),
+            "LAW": ("📖 BÀI THI LUẬT", 1),
+            "THEORY": ("🧠 BÀI THI LÝ THUYẾT", 2),
+            "FEEDBACK": ("💬 ĐÁNH GIÁ HỆ THỐNG (KHÔNG TÍNH ĐIỂM)", 3)
         }
-        title_text = cat_names.get(self.category, self.category)
-        self.lbl_title.setText(f"--- {title_text} ({idx+1}/{len(state.banks[self.category])}) ---")
+        title_text, section_idx = cat_info.get(self.category, ("📝 BÀI THI", 0))
+        
+        self.lbl_badge.setText(title_text)
+        
+        total_q = len(state.banks[self.category])
+        
+        while self.progress_layout.count():
+            item = self.progress_layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+                
+        for i in range(total_q):
+            dot = QFrame()
+            dot.setMinimumSize(4, 6)
+            dot.setMaximumSize(40, 6)
+            dot.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+            if i == idx:
+                dot.setStyleSheet("background-color: #00E5FF; border-radius: 3px;")  # Active
+            elif i < idx:
+                dot.setStyleSheet("background-color: rgba(0, 229, 255, 0.4); border-radius: 3px;") # Passed
+            else:
+                dot.setStyleSheet("background-color: rgba(255, 255, 255, 0.15); border-radius: 3px;") # Upcoming
+            self.progress_layout.addWidget(dot)
+                
+        self.lbl_q_progress.setText(f"Câu hỏi {idx+1} / {total_q}")
         
         self.lbl_q.setText(f"Câu {idx+1}. {q_data['q']}")
         
@@ -1030,9 +1114,15 @@ class TestScreen(BaseScreen):
         state.banks[self.category][self.curr_idx]["user_ans"] = ans_idx
 
     def end_test(self):
-        msg = ("Bạn có chắc chắn muốn kết thúc bài thi khởi động?" if self.is_warmup 
-               else "Bạn có chắc chắn muốn kết thúc bài thi ở đây?")
-        
+        if self.is_warmup:
+            msg = "Bạn có chắc chắn muốn kết thúc bài thi khởi động?"
+        elif self.category == "LAW":
+            msg = "Bạn có chắc chắn muốn kết thúc bài thi Luật và chuyển sang phần tiếp theo?"
+        elif self.category == "THEORY":
+            msg = "Bạn có chắc chắn muốn kết thúc bài thi Lý thuyết và chuyển sang phần tiếp theo?"
+        else:
+            msg = "Bạn có chắc chắn muốn kết thúc bài thi ở đây?"
+            
         reply = QMessageBox.question(self, "Xác nhận", msg, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         
         if reply == QMessageBox.StandardButton.Yes:
@@ -1050,7 +1140,7 @@ class TestScreen(BaseScreen):
                     
     def skip_warmup(self):
         reply = QMessageBox.question(
-            self, "Bỏ qua", "Bạn đã hiểu rõ về quy định và muốn vào phần thi chính thức?",
+            self, "Bỏ qua", "Bạn đã hiểu rõ về quy định và muốn vào bài thi chính thức?",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         if reply == QMessageBox.StandardButton.Yes and self.next_sc is not None:
@@ -1059,6 +1149,24 @@ class TestScreen(BaseScreen):
     def next_question(self):
         max_idx = len(state.banks[self.category]) - 1
         
+        if self.curr_idx >= max_idx:
+            if self.category in ["LAW", "THEORY"]:
+                QMessageBox.information(
+                    self, 
+                    "Thông báo", 
+                    "Bạn đã trả lời hết câu hỏi của bài thi, vui lòng chọn Kết thúc bài thi để chuyển sang phần tiếp theo"
+                )
+                return
+                
+            if self.is_warmup and self.next_sc is not None:
+                r2 = QMessageBox.question(self, "Bài thi chính thức", "Bạn có muốn chuyển sang bài thi chính thức?", 
+                                          QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if r2 == QMessageBox.StandardButton.Yes:
+                    self.main_app.go_to_test(self.next_sc, 0)
+            else:
+                self.end_test()
+            return
+            
         if self.category == "FEEDBACK":
             reply = QMessageBox.StandardButton.Yes
         else:
@@ -1068,16 +1176,7 @@ class TestScreen(BaseScreen):
             )
         if reply == QMessageBox.StandardButton.No: return
         
-        if self.curr_idx < max_idx:
-            self.load_question(self.curr_idx + 1)
-        else:
-            if self.is_warmup and self.next_sc is not None:
-                r2 = QMessageBox.question(self, "Phần thi chính thức", "Bạn có muốn chuyển sang phần thi chính thức?", 
-                                          QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-                if r2 == QMessageBox.StandardButton.Yes:
-                    self.main_app.go_to_test(self.next_sc, 0)
-            else:
-                QMessageBox.information(self, "Hoàn tất", "Đã hết câu hỏi! Vui lòng nhấn 'Kết thúc bài thi' để nộp bài.")
+        self.load_question(self.curr_idx + 1)
 
 
 # Màn hình Xem lại (Cho Luật & Lý thuyết)
@@ -1122,12 +1221,14 @@ class ReviewScreen(BaseScreen):
         footer = QHBoxLayout()
         footer.addStretch()
         
-        btn_finish = QPushButton("Kết thúc")
-        btn_finish.setStyleSheet("background-color: #d62828; color: white; padding: 10px 30px; border-radius: 8px; font-weight: bold; border: none; font-size: 16px;")
-        btn_finish.clicked.connect(lambda: self.main_app.switch_screen(9)) # Switch to Results
-        footer.addWidget(btn_finish)
-        
-        btn_end = QPushButton("Tiếp theo")
+        if self.category == "LAW":
+            end_btn_text = "Kết thúc bài thi Luật và chuyển sang phần tiếp theo"
+        elif self.category == "THEORY":
+            end_btn_text = "Kết thúc bài thi Lý thuyết và chuyển sang phần tiếp theo"
+        else:
+            end_btn_text = "Kết thúc bài thi và chuyển sang phần tiếp theo"
+            
+        btn_end = QPushButton(end_btn_text)
         btn_end.setObjectName("ActionButton")
         btn_end.setStyleSheet("padding: 10px 30px; border-radius: 8px; font-weight: bold; font-size: 16px;")
         btn_end.clicked.connect(self.finish_review)
