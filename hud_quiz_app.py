@@ -477,11 +477,17 @@ class ScreenCreateQuestion(BaseScreen):
         
         # Make the inputs taller and font larger for better visibility (especially on macOS)
         for inp in [self.inp_q, self.inp_a, self.inp_b, self.inp_c, self.inp_d]:
-            inp.setMinimumHeight(45)
-            inp.setStyleSheet("font-size: 16px; padding: 10px;")
+            inp.setMinimumHeight(55)
+            inp.setMinimumWidth(450)
+            inp.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+            inp.setStyleSheet("font-size: 16px; padding: 5px 15px;")
         
         self.cb_ans = QComboBox()
         self.cb_ans.addItems(["A", "B", "C", "D"])
+        self.cb_ans.setMinimumHeight(55)
+        self.cb_ans.setMinimumWidth(450)
+        self.cb_ans.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        self.cb_ans.setStyleSheet("font-size: 16px; padding: 5px 15px;")
         
         def add_row(label, widget):
             lbl = QLabel(label)
