@@ -2,7 +2,7 @@ name: Build Mac Executable
 
 on:
   push:
-    branches: [ "main" ] # Sẽ tự động chạy khi bạn push code lên nhánh main
+    branches: [ "main" ] # Sẽ tự động chạy khi bạn push code lên nhánh mai
 
 jobs:
   build:
