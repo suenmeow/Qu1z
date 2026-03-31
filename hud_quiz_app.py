@@ -118,10 +118,16 @@ class AppState:
     def __init__(self):
         self.banks = {
             "ALL": [],
-            "WARMUP": [],
-            "LAW": [],
-            "THEORY": [],
-            "FEEDBACK": []
+            "WARMUP": {"Mặc định": []},
+            "LAW": {"Mặc định": []},
+            "THEORY": {"Mặc định": []},
+            "FEEDBACK": {"Mặc định": []}
+        }
+        self.selected_exams = {
+            "WARMUP": "Mặc định",
+            "LAW": "Mặc định",
+            "THEORY": "Mặc định",
+            "FEEDBACK": "Mặc định"
         }
         self.load_db()
         
@@ -129,22 +135,52 @@ class AppState:
         if os.path.exists(DB_FILE):
             try:
                 with open(DB_FILE, "r", encoding="utf-8") as f:
-                    self.banks = json.load(f)
+                    data = json.load(f)
+                    if "banks" in data and isinstance(data["banks"], dict):
+                        self.banks["ALL"] = data["banks"].get("ALL", [])
+                        for cat in ["WARMUP", "LAW", "THEORY", "FEEDBACK"]:
+                            self.banks[cat] = {"Mặc định": data["banks"].get(cat, [])}
+                        if "exams" in data and isinstance(data["exams"], list):
+                            for exam in data["exams"]:
+                                exam_name = exam.get("name", "Mặc định")
+                                for cat in ["WARMUP", "LAW", "THEORY", "FEEDBACK"]:
+                                    if cat in exam:
+                                        self.banks[cat][exam_name] = exam[cat]
+                    else:
+                        for k in ["WARMUP", "LAW", "THEORY", "FEEDBACK"]:
+                            if k in data:
+                                if isinstance(data[k], list):
+                                    self.banks[k] = {"Mặc định": data[k]}
+                                else:
+                                    self.banks[k] = data[k]
+                        if "ALL" in data:
+                            self.banks["ALL"] = data["ALL"]
             except Exception:
                 pass
+        
+        for k in ["WARMUP", "LAW", "THEORY", "FEEDBACK"]:
+            if k not in self.banks:
+                self.banks[k] = {"Mặc định": []}
         if "ALL" not in self.banks:
             self.banks["ALL"] = []
+            
+    def get_exam(self, category):
+        exam_name = self.selected_exams.get(category, "Mặc định")
+        return self.banks.get(category, {}).get(exam_name, [])
+        
+    def get_exam_names(self, category):
+        return list(self.banks.get(category, {}).keys())
                 
     def save_db(self):
         with open(DB_FILE, "w", encoding="utf-8") as f:
             json.dump(self.banks, f, ensure_ascii=False, indent=4)
             
     def is_empty(self):
-        return len(self.banks.get("ALL", [])) == 0 and len(self.banks.get("LAW", [])) == 0
+        return len(self.banks.get("ALL", [])) == 0 and len(self.banks.get("LAW", {}).get("Mặc định", [])) == 0
 
     def populate_mock(self):
         # Màn hình 4: Khởi động (Mã độc)
-        self.banks["WARMUP"] = [
+        self.banks["WARMUP"]["Mặc định"] = [
             {"q": "Mã độc (Malware) là gì?", "opts": ["Phần mềm độc hại phá hoại hệ thống", "Phần mềm tăng tốc máy tính", "Trình duyệt web", "Phần mềm diệt virus"], "ans": 0, "user_ans": -1},
             {"q": "Ransomware hoạt động như thế nào?", "opts": ["Xóa file rác", "Mã hóa dữ liệu và tống tiền", "Chạy quảng cáo", "Tự động tải game"], "ans": 1, "user_ans": -1},
             {"q": "Loại mã độc nào tự nhân bản lan truyền qua mạng?", "opts": ["Trojan", "Spyware", "Worm (Sâu máy tính)", "Adware"], "ans": 2, "user_ans": -1},
@@ -152,26 +188,26 @@ class AppState:
             {"q": "Cách phòng chống mã độc hiệu quả nhất?", "opts": ["Rút dây mạng", "Không dùng máy tính", "Dùng phần mềm Anti-virus và cập nhật OS", "Xóa hệ điều hành"], "ans": 2, "user_ans": -1}
         ]
         # Màn hình 5: Bài thi Luật
-        self.banks["LAW"] = [
+        self.banks["LAW"]["Mặc định"] = [
             {"q": "Luật An ninh mạng của Việt Nam có hiệu lực từ năm nào?", "opts": ["2018", "2019", "2020", "2021"], "ans": 1, "user_ans": -1},
             {"q": "Hành vi nào bị nghiêm cấm trên không gian mạng?", "opts": ["Phát tán chương trình tin học gây hại", "Đọc báo trực tuyến", "Gửi email cho bạn bè", "Học trực tuyến"], "ans": 0, "user_ans": -1}
         ]
         # Màn hình 7: Bài thi Lý thuyết
-        self.banks["THEORY"] = [
+        self.banks["THEORY"]["Mặc định"] = [
             {"q": "Giao thức nào dùng để duyệt web bảo mật?", "opts": ["HTTP", "FTP", "HTTPS", "SMTP"], "ans": 2, "user_ans": -1},
             {"q": "Mật khẩu nào sau đây được coi là mạnh nhất?", "opts": ["123456", "password", "Abc@123456!", "admin123"], "ans": 2, "user_ans": -1}
         ]
         # Màn hình 9: Đánh giá hệ thống
-        self.banks["FEEDBACK"] = [
+        self.banks["FEEDBACK"]["Mặc định"] = [
             {"q": "Bạn thấy giao diện mô phỏng HUD này thế nào?", "opts": ["Rất hiện đại (A+)", "Khá đẹp", "Bình thường", "Cần cải thiện"], "ans": 0, "user_ans": -1},
             {"q": "Hệ thống có dễ thao tác không?", "opts": ["Rất dễ", "Khá dễ", "Bình thường", "Khó"], "ans": 0, "user_ans": -1}
         ]
         
         self.banks["ALL"] = (
-            self.banks["WARMUP"] + 
-            self.banks["LAW"] + 
-            self.banks["THEORY"] + 
-            self.banks["FEEDBACK"]
+            self.banks["WARMUP"]["Mặc định"] + 
+            self.banks["LAW"]["Mặc định"] + 
+            self.banks["THEORY"]["Mặc định"] + 
+            self.banks["FEEDBACK"]["Mặc định"]
         )
         
         self.save_db()
@@ -398,9 +434,8 @@ class ScreenIntro(BaseScreen):
             state.populate_mock()
             QMessageBox.information(self, "Tạo dữ liệu", "Hệ thống đã tự động tạo Mockup dữ liệu vì ngân hàng câu hỏi trống.")
         
-        test_screen = self.main_app.stack.widget(3) # Screen 3 = WARMUP screen
-        test_screen.load_question(0)
-        self.main_app.switch_screen(3)
+        self.main_app.switch_screen(11) # Chuyển sang ScreenChooseExam
+
 
 
 # Màn hình 2: Lựa chọn tính năng
@@ -439,8 +474,13 @@ class ScreenMenu(BaseScreen):
     def start_test(self):
         # Reset toàn bộ câu trả lời của người dùng trước khi làm bài mới
         for cat in state.banks:
-            for q in state.banks[cat]:
-                q["user_ans"] = -1
+            if cat == "ALL":
+                for q in state.banks["ALL"]:
+                    q["user_ans"] = -1
+            else:
+                for exam_name, questions in state.banks[cat].items():
+                    for q in questions:
+                        q["user_ans"] = -1
                 
         # Chuyển sang màn hình giới thiệu (Intro)
         intro_screen = self.main_app.stack.widget(0)
@@ -647,12 +687,36 @@ class ScreenCreateExam(BaseScreen):
         self.cb_cat = QComboBox()
         self.cb_cat.addItems(["Bài thi làm quen (Warmup)", "Bài thi Luật", "Bài thi lý thuyết", "Câu hỏi đánh giá hệ thống"])
         self.cb_cat.setFixedWidth(300)
-        self.cb_cat.currentIndexChanged.connect(self.refresh_lists)
+        self.cb_cat.currentIndexChanged.connect(self.on_cat_changed)
         cat_layout.addStretch()
         cat_layout.addWidget(lbl_cat)
         cat_layout.addWidget(self.cb_cat)
         cat_layout.addStretch()
         layout.addLayout(cat_layout)
+        
+        # Chọn đề thi
+        exam_layout = QHBoxLayout()
+        lbl_exam = QLabel("Chọn đề thi:")
+        lbl_exam.setStyleSheet("color: white; font-weight: bold; font-size: 16px;")
+        self.cb_exam = QComboBox()
+        self.cb_exam.setFixedWidth(300)
+        self.cb_exam.currentIndexChanged.connect(self.refresh_lists)
+        
+        btn_new_exam = QPushButton("+ Tạo đề thi mới")
+        btn_new_exam.setObjectName("ActionButton")
+        btn_new_exam.clicked.connect(self.create_exam)
+        
+        btn_del_exam = QPushButton("Xóa đề thi")
+        btn_del_exam.setStyleSheet("background-color: #d62828;")
+        btn_del_exam.clicked.connect(self.delete_exam)
+        
+        exam_layout.addStretch()
+        exam_layout.addWidget(lbl_exam)
+        exam_layout.addWidget(self.cb_exam)
+        exam_layout.addWidget(btn_new_exam)
+        exam_layout.addWidget(btn_del_exam)
+        exam_layout.addStretch()
+        layout.addLayout(exam_layout)
         
         layout.addSpacing(20)
         
@@ -698,10 +762,10 @@ class ScreenCreateExam(BaseScreen):
         
         # Right: Exam questions
         right_layout = QVBoxLayout()
-        lbl_exam = QLabel("Câu hỏi trong đề thi")
-        lbl_exam.setStyleSheet("color: #00FF00; font-weight: bold; font-size: 16px;")
-        lbl_exam.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        right_layout.addWidget(lbl_exam)
+        lbl_exam_qs = QLabel("Câu hỏi trong đề thi")
+        lbl_exam_qs.setStyleSheet("color: #00FF00; font-weight: bold; font-size: 16px;")
+        lbl_exam_qs.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        right_layout.addWidget(lbl_exam_qs)
         
         self.list_exam = QListWidget()
         list_style_exam = """
@@ -724,19 +788,60 @@ class ScreenCreateExam(BaseScreen):
         
     def showEvent(self, event):
         super().showEvent(event)
-        self.refresh_lists()
+        self.on_cat_changed()
         
     def get_current_cat_key(self):
         cat_map = {"Bài thi làm quen (Warmup)": "WARMUP", "Bài thi Luật": "LAW", "Bài thi lý thuyết": "THEORY", "Câu hỏi đánh giá hệ thống": "FEEDBACK"}
         return cat_map[self.cb_cat.currentText()]
         
+    def get_current_exam_name(self):
+        return self.cb_exam.currentText() or "Mặc định"
+        
+    def on_cat_changed(self):
+        cat = self.get_current_cat_key()
+        self.cb_exam.blockSignals(True)
+        self.cb_exam.clear()
+        self.cb_exam.addItems(state.get_exam_names(cat))
+        self.cb_exam.blockSignals(False)
+        self.refresh_lists()
+        
+    def create_exam(self):
+        from PyQt6.QtWidgets import QInputDialog
+        text, ok = QInputDialog.getText(self, 'Tạo đề thi mới', 'Nhập tên đề thi:')
+        if ok and text.strip():
+            text = text.strip()
+            cat = self.get_current_cat_key()
+            if text in state.banks[cat]:
+                QMessageBox.warning(self, "Lỗi", "Tên đề thi đã tồn tại!")
+                return
+            state.banks[cat][text] = []
+            state.save_db()
+            self.on_cat_changed()
+            self.cb_exam.setCurrentText(text)
+            
+    def delete_exam(self):
+        cat = self.get_current_cat_key()
+        exam = self.get_current_exam_name()
+        if exam == "Mặc định":
+            QMessageBox.warning(self, "Lỗi", "Không thể xóa đề thi Mặc định!")
+            return
+            
+        reply = QMessageBox.question(self, "Xác nhận", f"Bạn có chắc muốn xóa đề thi '{exam}'?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            del state.banks[cat][exam]
+            state.save_db()
+            self.on_cat_changed()
+
     def refresh_lists(self):
         from PyQt6.QtWidgets import QListWidgetItem
         self.list_all.clear()
         self.list_exam.clear()
         
         cat = self.get_current_cat_key()
-        exam_qs = [q['q'] for q in state.banks.get(cat, [])]
+        exam_name = self.get_current_exam_name()
+        
+        exam_info = state.banks.get(cat, {}).get(exam_name, [])
+        exam_qs = [q['q'] for q in exam_info]
         search_kw = hasattr(self, 'inp_search_all') and self.inp_search_all.text().lower() or ""
         
         for idx, q in enumerate(state.banks.get("ALL", [])):
@@ -745,7 +850,7 @@ class ScreenCreateExam(BaseScreen):
                 item.setData(Qt.ItemDataRole.UserRole, idx)
                 self.list_all.addItem(item)
             
-        for idx, q in enumerate(state.banks.get(cat, [])):
+        for idx, q in enumerate(exam_info):
             item = QListWidgetItem(f"Câu {idx+1}: {q['q']}")
             item.setData(Qt.ItemDataRole.UserRole, idx)
             self.list_exam.addItem(item)
@@ -760,7 +865,9 @@ class ScreenCreateExam(BaseScreen):
         q_data = state.banks["ALL"][all_idx]
         
         cat = self.get_current_cat_key()
-        exam_qs = [q['q'] for q in state.banks.get(cat, [])]
+        exam_name = self.get_current_exam_name()
+        exam_info = state.banks.get(cat, {}).get(exam_name, [])
+        exam_qs = [q['q'] for q in exam_info]
         if q_data['q'] in exam_qs:
             QMessageBox.warning(self, "Lỗi", "Câu hỏi này đã có trong đề thi!")
             return
@@ -769,9 +876,11 @@ class ScreenCreateExam(BaseScreen):
         q_copy = copy.deepcopy(q_data)
         q_copy["user_ans"] = -1
         
-        if cat not in state.banks:
-            state.banks[cat] = []
-        state.banks[cat].append(q_copy)
+        if exam_name not in state.banks.get(cat, {}):
+            if cat not in state.banks:
+                state.banks[cat] = {}
+            state.banks[cat][exam_name] = []
+        state.banks[cat][exam_name].append(q_copy)
         state.save_db()
         self.refresh_lists()
         
@@ -783,8 +892,9 @@ class ScreenCreateExam(BaseScreen):
             
         exam_idx = selected.data(Qt.ItemDataRole.UserRole)
         cat = self.get_current_cat_key()
+        exam_name = self.get_current_exam_name()
         
-        state.banks[cat].pop(exam_idx)
+        state.banks[cat][exam_name].pop(exam_idx)
         state.save_db()
         self.refresh_lists()
 
@@ -1054,7 +1164,7 @@ class TestScreen(BaseScreen):
             self.main_app.switch_screen(self.review_sc)
 
     def load_question(self, idx, is_review=False):
-        if idx < 0 or idx >= len(state.banks[self.category]):
+        if idx < 0 or idx >= len(state.get_exam(self.category)):
             return
             
         if is_review:
@@ -1069,7 +1179,7 @@ class TestScreen(BaseScreen):
             self.btn_confirm.hide()
         
         self.curr_idx = idx
-        q_data = state.banks[self.category][idx]
+        q_data = state.get_exam(self.category)[idx]
         
         cat_info = {
             "WARMUP": ("🎯 CÁC CÂU HỎI KHÔNG TÍNH ĐIỂM ĐỂ LÀM QUEN PHẦN MỀM", 0),
@@ -1081,7 +1191,7 @@ class TestScreen(BaseScreen):
         
         self.lbl_badge.setText(title_text)
         
-        total_q = len(state.banks[self.category])
+        total_q = len(state.get_exam(self.category))
         
         while self.progress_layout.count():
             item = self.progress_layout.takeAt(0)
@@ -1117,7 +1227,7 @@ class TestScreen(BaseScreen):
         for opt in self.btn_opts:
             if opt.index != ans_idx:
                 opt.setChecked(False)
-        state.banks[self.category][self.curr_idx]["user_ans"] = ans_idx
+        state.get_exam(self.category)[self.curr_idx]["user_ans"] = ans_idx
 
     def end_test(self):
         if self.is_warmup:
@@ -1153,7 +1263,7 @@ class TestScreen(BaseScreen):
             self.main_app.go_to_test(self.next_sc, 0)
             
     def next_question(self):
-        max_idx = len(state.banks[self.category]) - 1
+        max_idx = len(state.get_exam(self.category)) - 1
         
         if self.curr_idx >= max_idx:
             if self.category in ["LAW", "THEORY"]:
@@ -1249,7 +1359,7 @@ class ReviewScreen(BaseScreen):
             widget = self.list_layout.itemAt(i).widget()
             if widget is not None: widget.setParent(None)
             
-        for idx, q_data in enumerate(state.banks[self.category]):
+        for idx, q_data in enumerate(state.get_exam(self.category)):
             row = QFrame()
             row.setStyleSheet("background-color: rgba(0,0,0,100); border-radius: 8px; border: 1px solid #00E5FF;")
             r_lay = QVBoxLayout(row)
@@ -1295,6 +1405,95 @@ class ReviewScreen(BaseScreen):
                 if hasattr(tgt, "load_question"):
                     tgt.load_question(0)
             self.main_app.switch_screen(self.next_sc_idx)
+
+
+# Màn hình 11: Chọn đề thi con
+class ScreenChooseExam(BaseScreen):
+    def __init__(self, main_app):
+        super().__init__(main_app)
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        lbl_title = QLabel("CHỌN ĐỀ THI")
+        lbl_title.setObjectName("Title")
+        lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(lbl_title)
+        
+        layout.addSpacing(30)
+        
+        form_layout = QFormLayout()
+        form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
+        
+        self.cb_warmup = QComboBox()
+        self.cb_law = QComboBox()
+        self.cb_theory = QComboBox()
+        self.cb_feedback = QComboBox()
+        
+        for cb in [self.cb_warmup, self.cb_law, self.cb_theory, self.cb_feedback]:
+            cb.setMinimumHeight(45)
+            cb.setMinimumWidth(300)
+            cb.setStyleSheet("font-size: 16px; padding: 5px 15px;")
+            
+        def add_row(label, widget):
+            lbl = QLabel(label)
+            lbl.setStyleSheet("color: white; font-weight: bold; font-size: 16px;")
+            form_layout.addRow(lbl, widget)
+            
+        add_row("Bài thi làm quen (Warmup):", self.cb_warmup)
+        add_row("Bài thi Luật:", self.cb_law)
+        add_row("Bài thi Lý thuyết:", self.cb_theory)
+        add_row("Câu hỏi đánh giá hệ thống:", self.cb_feedback)
+        
+        h_wrapper = QHBoxLayout()
+        h_wrapper.addStretch()
+        h_wrapper.addLayout(form_layout)
+        h_wrapper.addStretch()
+        layout.addLayout(h_wrapper)
+        
+        layout.addSpacing(40)
+        
+        btn_layout = QHBoxLayout()
+        btn_back = QPushButton("Quay lại")
+        btn_back.clicked.connect(lambda: self.main_app.switch_screen(1))
+        btn_back.setFixedSize(160, 50)
+        
+        btn_start = QPushButton("Bắt đầu làm bài")
+        btn_start.setObjectName("ActionButton")
+        btn_start.setFixedSize(200, 50)
+        btn_start.clicked.connect(self.start_exam)
+        
+        btn_layout.addStretch()
+        btn_layout.addWidget(btn_back)
+        btn_layout.addSpacing(20)
+        btn_layout.addWidget(btn_start)
+        btn_layout.addStretch()
+        
+        layout.addLayout(btn_layout)
+        
+    def showEvent(self, event):
+        super().showEvent(event)
+        def refresh_cb(cb, cat):
+            cb.clear()
+            names = state.get_exam_names(cat)
+            cb.addItems(names)
+            curr = state.selected_exams.get(cat, "Mặc định")
+            if curr in names:
+                cb.setCurrentText(curr)
+                
+        refresh_cb(self.cb_warmup, "WARMUP")
+        refresh_cb(self.cb_law, "LAW")
+        refresh_cb(self.cb_theory, "THEORY")
+        refresh_cb(self.cb_feedback, "FEEDBACK")
+        
+    def start_exam(self):
+        state.selected_exams["WARMUP"] = self.cb_warmup.currentText()
+        state.selected_exams["LAW"] = self.cb_law.currentText()
+        state.selected_exams["THEORY"] = self.cb_theory.currentText()
+        state.selected_exams["FEEDBACK"] = self.cb_feedback.currentText()
+        
+        test_screen = self.main_app.stack.widget(3)
+        test_screen.load_question(0)
+        self.main_app.switch_screen(3)
 
 
 # Màn hình 10: Xem Kết quả
@@ -1354,7 +1553,7 @@ class ScreenResults(BaseScreen):
         
     def calc_scores(self):
         for cat, lbl in [("LAW", self.lbl_law), ("THEORY", self.lbl_theory)]:
-            bank = state.banks[cat]
+            bank = state.get_exam(cat)
             if not bank: continue
             
             total = len(bank)
@@ -1371,7 +1570,7 @@ class ScreenResults(BaseScreen):
             if widget is not None: widget.setParent(None)
             
         for cat, cat_name in [("LAW", "BÀI THI LUẬT"), ("THEORY", "BÀI THI LÝ THUYẾT")]:
-            bank = state.banks[cat]
+            bank = state.get_exam(cat)
             if not bank: continue
             
             # Category Header
@@ -1463,6 +1662,7 @@ class MainApp(QMainWindow):
         self.stack.addWidget(ScreenResults(self)) # 9
         
         self.stack.addWidget(ScreenCreateExam(self)) # 10
+        self.stack.addWidget(ScreenChooseExam(self)) # 11
         
         self.stack.setCurrentIndex(1)
         
