@@ -430,11 +430,9 @@ class ScreenIntro(BaseScreen):
         self.btn_next.setEnabled(False)
 
     def start_test(self):
-        if state.is_empty():
-            state.populate_mock()
-            QMessageBox.information(self, "Tạo dữ liệu", "Hệ thống đã tự động tạo Mockup dữ liệu vì ngân hàng câu hỏi trống.")
-        
-        self.main_app.switch_screen(11) # Chuyển sang ScreenChooseExam
+        test_screen = self.main_app.stack.widget(3)
+        test_screen.load_question(0)
+        self.main_app.switch_screen(3) # Chuyển sang TestScreen
 
 
 
@@ -481,14 +479,17 @@ class ScreenMenu(BaseScreen):
                 for exam_name, questions in state.banks[cat].items():
                     for q in questions:
                         q["user_ans"] = -1
+                        
+        if state.is_empty():
+            state.populate_mock()
+            QMessageBox.information(self, "Tạo dữ liệu", "Hệ thống đã tự động tạo Mockup dữ liệu vì ngân hàng câu hỏi trống.")
                 
-        # Chuyển sang màn hình giới thiệu (Intro)
+        # Reset lại trạng thái các nút ở Intro
         intro_screen = self.main_app.stack.widget(0)
-        
-        # Reset lại trạng thái các nút
         intro_screen.reset_radios()
         
-        self.main_app.switch_screen(0)
+        # Chuyển sang màn hình chọn đề thi (ChooseExam)
+        self.main_app.switch_screen(11)
 
 
 # Màn hình 3: Tạo câu hỏi
@@ -1491,9 +1492,8 @@ class ScreenChooseExam(BaseScreen):
         state.selected_exams["THEORY"] = self.cb_theory.currentText()
         state.selected_exams["FEEDBACK"] = self.cb_feedback.currentText()
         
-        test_screen = self.main_app.stack.widget(3)
-        test_screen.load_question(0)
-        self.main_app.switch_screen(3)
+        # Chuyển sang màn hình giới thiệu (Intro)
+        self.main_app.switch_screen(0)
 
 
 # Màn hình 10: Xem Kết quả
